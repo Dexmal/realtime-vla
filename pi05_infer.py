@@ -785,7 +785,7 @@ class Pi05Inference:
         return embeds, int(embeds.shape[0])
 
     def get_decoder_rope_weights(self, prompt_len: int) -> torch.Tensor:
-        start = self.num_views * 256 + prompt_len - 1
+        start = self.num_views * 256 + prompt_len
         end = start + self.chunk_size
         return self._rope_table[start:end]
 
