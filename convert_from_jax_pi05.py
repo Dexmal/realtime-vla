@@ -1,12 +1,16 @@
-import os
-import numpy as np
-import torch
-import torch.nn as nn
-import jax
-import pickle
-import orbax.checkpoint as ocp
 import math
+import os
+import pickle
+
+import jax
+import numpy as np
+import orbax.checkpoint as ocp
+import torch
+from torch import nn
 from transformers import AutoTokenizer
+
+from openpi_lora import merge_lora_weights
+
 
 def convert_weights_pi05(weights, dump_weights):
     # vision encoder weights
@@ -209,7 +213,11 @@ def load_jax_weights(jax_path: str):
         else:
             return {"value": node}
 
-    return _ensure_value_dict(params)
+    params = _ensure_value_dict(params)
+    merged = merge_lora_weights(params)
+    if merged:
+        print(f"Merged {len(merged)} LoRA weight groups")
+    return params
 
 def prepare_adarms_cond(num_steps):
     dt = -1.0 / num_steps

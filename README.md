@@ -121,6 +121,12 @@ python3 convert_dm0_weight.py \
    --output converted_checkpoint.pt
 ```
 
+The JAX converters also support OpenPI LoRA checkpoints. When the checkpoint
+contains `lora_a`/`lora_b` leaves (including the scanned attention and MLP
+layers), the low-rank updates are folded into the dense weights before the
+PyTorch checkpoint is emitted. The official Pi0/Pi0.5 presets use the default
+unit LoRA scale, so no extra conversion step is required.
+
 The code is specifically tuned on RTX 4090, CUDA 12.6, but it should work on similar platforms so long as torch and triton themselves work.
 
 ## Checking Performance
